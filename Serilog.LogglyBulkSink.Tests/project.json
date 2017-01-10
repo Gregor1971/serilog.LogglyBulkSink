@@ -9,7 +9,7 @@
     "MSTest.TestFramework": "1.0.7-preview",
     "FluentAssertions": "4.3.2",
     "Serilog.LogglyBulkSink": {
-      "version": "1.0.0",
+      "version": "1.1.0",
       "target": "project"
     }
   },

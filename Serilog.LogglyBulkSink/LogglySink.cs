@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Serilog.Events;
@@ -17,15 +19,44 @@ namespace Serilog.LogglyBulkSink
         public const string LogglyUriFormat = "https://logs-01.loggly.com/bulk/{0}/tag/{1}";
         public const double MaxBulkBytes = 4.5 * 1024 * 1024;
         private readonly bool _includeDiagnostics;
+        private HttpClient _httpClient = new HttpClient();
+        private ConcurrentQueue<Task> _batchQueue = new ConcurrentQueue<Task>();
+        private int _emitCount = 0;
+        private readonly int _maxConcurrentBatches;
 
-        public LogglySink(string logglyKey, string[] tags, int batchSizeLimit, TimeSpan period, bool includeDiagnostics = false)
+        public LogglySink(string logglyKey, string[] tags, int batchSizeLimit, TimeSpan period, bool includeDiagnostics = false, int maxConcurrentBatches = 1)
             : base(batchSizeLimit, period)
         {
             _includeDiagnostics = includeDiagnostics;
             _logglyUrl = string.Format(LogglyUriFormat, logglyKey, string.Join(",", tags));
+            _maxConcurrentBatches = maxConcurrentBatches;
         }
 
-        protected override async Task EmitBatchAsync(IEnumerable<LogEvent> events)
+        public LogglySink(string logglyKey, string[] tags, int batchSizeLimit, TimeSpan period, int queueLimit, bool includeDiagnostics = false, int maxConcurrentBatches = 1)
+            : base(batchSizeLimit, period, queueLimit)
+        {
+            _includeDiagnostics = includeDiagnostics;
+            _logglyUrl = string.Format(LogglyUriFormat, logglyKey, string.Join(",", tags));
+            _maxConcurrentBatches = maxConcurrentBatches;
+        }
+
+        protected override Task EmitBatchAsync(IEnumerable<LogEvent> events)
+        {
+            _batchQueue.Enqueue(ProcessBatchAsync(events));
+
+            Task result;
+
+            if (Interlocked.Increment(ref _emitCount) >= _maxConcurrentBatches && _batchQueue.TryDequeue(out result))
+            {
+                return result;
+            }
+            else
+            {
+                return Task.CompletedTask;
+            }
+        }
+
+        private async Task ProcessBatchAsync(IEnumerable<LogEvent> events)
         {
             foreach (var content in ChunkEvents(events))
             {
@@ -33,18 +64,16 @@ namespace Serilog.LogglyBulkSink
                 {
                     continue;
                 }
-                using (var httpClient = new HttpClient())
+
+                try
                 {
-                    try
-                    {
-                        var response = await httpClient.PostAsync(_logglyUrl, content);
-                        response.EnsureSuccessStatusCode();
-                    }
-                    catch (Exception ex)
-                    {
-                        Trace.WriteLine($"Exception posting to loggly {ex}");
-                        Debugging.SelfLog.WriteLine($"Exception posting to loggly {ex}");
-                    }
+                    var response = await _httpClient.PostAsync(_logglyUrl, content).ConfigureAwait(false);
+                    response.EnsureSuccessStatusCode();
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine($"Exception posting to loggly {ex}");
+                    Debugging.SelfLog.WriteLine($"Exception posting to loggly {ex}");
                 }
             }
         }
@@ -90,7 +119,7 @@ namespace Serilog.LogglyBulkSink
                 });
                 jsons.Add(diagnostic);
             }
-            
+
             return new StringContent(string.Join("\n", jsons), Encoding.UTF8, "application/json");
         }
 
@@ -136,11 +165,36 @@ namespace Serilog.LogglyBulkSink
             }
             return null;
         }
-        
+
         public static void AddIfNotContains<TKey, TValue>(IDictionary<TKey, TValue> dictionary, TKey key, TValue value)
         {
             if (dictionary.ContainsKey(key)) return;
             dictionary[key] = value;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+
+            if (disposing)
+            {
+                var prevContext = SynchronizationContext.Current;
+                SynchronizationContext.SetSynchronizationContext(null);
+                try
+                {
+                    Task result;
+                    while (_batchQueue.TryDequeue(out result))
+                    {
+                        result.Wait();
+                    }
+                }
+                finally
+                {
+                    SynchronizationContext.SetSynchronizationContext(prevContext);
+                }
+
+                _httpClient.Dispose();
+            }
         }
     }
 }

@@ -16,15 +16,19 @@ namespace Serilog.LogglyBulkSink
         /// <param name="batchPostingLimit">Batch Posting Limit, defaults to 1000</param>
         /// <param name="period">Frequency of Periodic Batch Sink auto flushing</param>
         /// <param name="includeDiagnostics">Whether or not to send the Loggly Diagnostics Event</param>
+        /// <param name="queueLimit">The maximum number of events that may be queued (any further will be dropped), defaults to unbounded</param>
+        /// <param name="maxConcurrentBatches">The maximum number of concurrent batches to process, defaults to 1</param>
         /// <returns>Original Log Sink Configuration now updated</returns>
         /// <remarks>Depending on your aveage log event size, a batch positing limit on the order of 10000 could be reasonable</remarks>
-        public static LoggerConfiguration LogglyBulk(this LoggerSinkConfiguration lc, 
-            string logglyKey, 
+        public static LoggerConfiguration LogglyBulk(this LoggerSinkConfiguration lc,
+            string logglyKey,
             string[] logglyTags,
             LogEventLevel restrictedToMinLevel = LogEventLevel.Verbose,
             int batchPostingLimit = 1000,
             TimeSpan? period = null,
-            bool includeDiagnostics = false)
+            bool includeDiagnostics = false,
+            int? queueLimit = null,
+            int maxConcurrentBatches = 1)
         {
             if (lc == null)
             {
@@ -32,8 +36,8 @@ namespace Serilog.LogglyBulkSink
             }
 
             var frequency = period ?? TimeSpan.FromSeconds(30);
-
-            return lc.Sink(new LogglySink(logglyKey, logglyTags, batchPostingLimit, frequency, includeDiagnostics), restrictedToMinLevel);
+            var sink = queueLimit.HasValue ? new LogglySink(logglyKey, logglyTags, batchPostingLimit, frequency, queueLimit.Value, includeDiagnostics, maxConcurrentBatches) : new LogglySink(logglyKey, logglyTags, batchPostingLimit, frequency, includeDiagnostics, maxConcurrentBatches);
+            return lc.Sink(sink, restrictedToMinLevel);
         }
     }
 }

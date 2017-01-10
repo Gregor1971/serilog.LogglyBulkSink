@@ -237,18 +237,18 @@
           "lib/netstandard1.3/Serilog.dll": {}
         }
       },
-      "Serilog.Sinks.PeriodicBatching/2.0.0": {
+      "Serilog.Sinks.PeriodicBatching/2.1.0": {
         "type": "package",
         "dependencies": {
           "Serilog": "2.0.0",
           "System.Collections.Concurrent": "4.0.12",
-          "System.Threading.Thread": "4.0.0"
+          "System.Threading.Timer": "4.0.1"
         },
         "compile": {
-          "lib/netstandard1.3/Serilog.Sinks.PeriodicBatching.dll": {}
+          "lib/netstandard1.2/Serilog.Sinks.PeriodicBatching.dll": {}
         },
         "runtime": {
-          "lib/netstandard1.3/Serilog.Sinks.PeriodicBatching.dll": {}
+          "lib/netstandard1.2/Serilog.Sinks.PeriodicBatching.dll": {}
         }
       },
       "System.Collections/4.3.0": {
@@ -1015,16 +1015,15 @@
           "ref/netstandard1.3/System.Threading.Tasks.dll": {}
         }
       },
-      "System.Threading.Thread/4.0.0": {
+      "System.Threading.Timer/4.0.1": {
         "type": "package",
         "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.0.1",
+          "Microsoft.NETCore.Targets": "1.0.1",
           "System.Runtime": "4.1.0"
         },
         "compile": {
-          "ref/netstandard1.3/System.Threading.Thread.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.3/System.Threading.Thread.dll": {}
+          "ref/netstandard1.2/System.Threading.Timer.dll": {}
         }
       }
     }
@@ -1332,19 +1331,19 @@
         "lib/netstandard1.3/Serilog.xml"
       ]
     },
-    "Serilog.Sinks.PeriodicBatching/2.0.0": {
-      "sha512": "gfG5MaAKdGw0CFPdoXV9I0m+s5CbUxihFeiRMD/nSPzP/S8Lmop0McQhz8o1tKBU/7SkM1UOjWsBdv5LObDBOg==",
+    "Serilog.Sinks.PeriodicBatching/2.1.0": {
+      "sha512": "FshW9PfIdLRfFCCoyU5Z8YKg6axd0ufy9pbcgTyf/mOIZjt78zVl5lZAjUBI2YDHncS3gtH/Bf0YKqMCWh2/0Q==",
       "type": "package",
-      "path": "Serilog.Sinks.PeriodicBatching/2.0.0",
+      "path": "Serilog.Sinks.PeriodicBatching/2.1.0",
       "files": [
-        "Serilog.Sinks.PeriodicBatching.2.0.0.nupkg.sha512",
+        "Serilog.Sinks.PeriodicBatching.2.1.0.nupkg.sha512",
         "Serilog.Sinks.PeriodicBatching.nuspec",
         "lib/net45/Serilog.Sinks.PeriodicBatching.dll",
         "lib/net45/Serilog.Sinks.PeriodicBatching.xml",
         "lib/netstandard1.1/Serilog.Sinks.PeriodicBatching.dll",
         "lib/netstandard1.1/Serilog.Sinks.PeriodicBatching.xml",
-        "lib/netstandard1.3/Serilog.Sinks.PeriodicBatching.dll",
-        "lib/netstandard1.3/Serilog.Sinks.PeriodicBatching.xml"
+        "lib/netstandard1.2/Serilog.Sinks.PeriodicBatching.dll",
+        "lib/netstandard1.2/Serilog.Sinks.PeriodicBatching.xml"
       ]
     },
     "System.Collections/4.3.0": {
@@ -3680,38 +3679,53 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
-    "System.Threading.Thread/4.0.0": {
-      "sha512": "gIdJqDXlOr5W9zeqFErLw3dsOsiShSCYtF9SEHitACycmvNvY8odf9kiKvp6V7aibc8C4HzzNBkWXjyfn7plbQ==",
+    "System.Threading.Timer/4.0.1": {
+      "sha512": "saGfUV8uqVW6LeURiqxcGhZ24PzuRNaUBtbhVeuUAvky1naH395A/1nY0P2bWvrw/BreRtIB/EzTDkGBpqCwEw==",
       "type": "package",
-      "path": "System.Threading.Thread/4.0.0",
+      "path": "System.Threading.Timer/4.0.1",
       "files": [
-        "System.Threading.Thread.4.0.0.nupkg.sha512",
-        "System.Threading.Thread.nuspec",
+        "System.Threading.Timer.4.0.1.nupkg.sha512",
+        "System.Threading.Timer.nuspec",
         "ThirdPartyNotices.txt",
         "dotnet_library_license.txt",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
-        "lib/net46/System.Threading.Thread.dll",
-        "lib/netcore50/_._",
-        "lib/netstandard1.3/System.Threading.Thread.dll",
+        "lib/net451/_._",
+        "lib/portable-net451+win81+wpa81/_._",
+        "lib/win81/_._",
+        "lib/wpa81/_._",
         "lib/xamarinios10/_._",
         "lib/xamarinmac20/_._",
         "lib/xamarintvos10/_._",
         "lib/xamarinwatchos10/_._",
         "ref/MonoAndroid10/_._",
         "ref/MonoTouch10/_._",
-        "ref/net46/System.Threading.Thread.dll",
-        "ref/netstandard1.3/System.Threading.Thread.dll",
-        "ref/netstandard1.3/System.Threading.Thread.xml",
-        "ref/netstandard1.3/de/System.Threading.Thread.xml",
-        "ref/netstandard1.3/es/System.Threading.Thread.xml",
-        "ref/netstandard1.3/fr/System.Threading.Thread.xml",
-        "ref/netstandard1.3/it/System.Threading.Thread.xml",
-        "ref/netstandard1.3/ja/System.Threading.Thread.xml",
-        "ref/netstandard1.3/ko/System.Threading.Thread.xml",
-        "ref/netstandard1.3/ru/System.Threading.Thread.xml",
-        "ref/netstandard1.3/zh-hans/System.Threading.Thread.xml",
-        "ref/netstandard1.3/zh-hant/System.Threading.Thread.xml",
+        "ref/net451/_._",
+        "ref/netcore50/System.Threading.Timer.dll",
+        "ref/netcore50/System.Threading.Timer.xml",
+        "ref/netcore50/de/System.Threading.Timer.xml",
+        "ref/netcore50/es/System.Threading.Timer.xml",
+        "ref/netcore50/fr/System.Threading.Timer.xml",
+        "ref/netcore50/it/System.Threading.Timer.xml",
+        "ref/netcore50/ja/System.Threading.Timer.xml",
+        "ref/netcore50/ko/System.Threading.Timer.xml",
+        "ref/netcore50/ru/System.Threading.Timer.xml",
+        "ref/netcore50/zh-hans/System.Threading.Timer.xml",
+        "ref/netcore50/zh-hant/System.Threading.Timer.xml",
+        "ref/netstandard1.2/System.Threading.Timer.dll",
+        "ref/netstandard1.2/System.Threading.Timer.xml",
+        "ref/netstandard1.2/de/System.Threading.Timer.xml",
+        "ref/netstandard1.2/es/System.Threading.Timer.xml",
+        "ref/netstandard1.2/fr/System.Threading.Timer.xml",
+        "ref/netstandard1.2/it/System.Threading.Timer.xml",
+        "ref/netstandard1.2/ja/System.Threading.Timer.xml",
+        "ref/netstandard1.2/ko/System.Threading.Timer.xml",
+        "ref/netstandard1.2/ru/System.Threading.Timer.xml",
+        "ref/netstandard1.2/zh-hans/System.Threading.Timer.xml",
+        "ref/netstandard1.2/zh-hant/System.Threading.Timer.xml",
+        "ref/portable-net451+win81+wpa81/_._",
+        "ref/win81/_._",
+        "ref/wpa81/_._",
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "ref/xamarintvos10/_._",
@@ -3723,7 +3737,7 @@
     "": [
       "Newtonsoft.Json >= 6.0.8",
       "Serilog >= 2.1.0",
-      "Serilog.Sinks.PeriodicBatching >= 2.0.0",
+      "Serilog.Sinks.PeriodicBatching >= 2.1.0",
       "System.Diagnostics.TraceSource >= 4.0.0",
       "System.Net.Http >= 4.3.0",
       "System.Runtime.InteropServices >= 4.3.0"
