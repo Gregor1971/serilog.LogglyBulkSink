@@ -1,0 +1,3 @@
+{
+  "projects": [ "Serilog.LogglyBulkSink", "Serilog.LogglyBulkSink.Tests" ]
+}
