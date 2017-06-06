@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Serilog.Events;
 using Serilog.Sinks.PeriodicBatching;
 
@@ -155,7 +157,8 @@ namespace Serilog.LogglyBulkSink
                 var result = JsonConvert.SerializeObject(payload,
                     new JsonSerializerSettings
                     {
-                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                        ContractResolver = ShouldSerializeContractResolver.Instance,
                     });
                 return result;
             }
@@ -194,6 +197,57 @@ namespace Serilog.LogglyBulkSink
                 }
 
                 _httpClient.Dispose();
+            }
+        }
+
+        private class ShouldSerializeContractResolver : DefaultContractResolver
+        {
+            public static readonly ShouldSerializeContractResolver Instance = new ShouldSerializeContractResolver();
+
+            protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+            {
+                JsonProperty property = base.CreateProperty(member, memberSerialization);
+
+                if (property.DeclaringType.GetTypeInfo().IsAssignableFrom(typeof(Exception)) && property.PropertyName == "TargetSite")
+                {
+                    property.ShouldSerialize = _ => false;
+                }
+
+                return property;
+            }
+
+            protected override JsonObjectContract CreateObjectContract(Type objectType)
+            {
+                var objectContract = base.CreateObjectContract(objectType);
+
+                if (typeof(Exception).GetTypeInfo().IsAssignableFrom(objectType))
+                {
+                    objectContract.Properties.AddProperty(new JsonProperty
+                    {
+                        DeclaringType = objectType,
+                        DefaultValue = objectType.ToString(),
+                        PropertyName = "Type",
+                        PropertyType = typeof(string),
+                        Readable = true,
+                        UnderlyingName = "Type",
+                        ValueProvider = new TypeValueProvider(),
+                    });
+                }
+
+                return objectContract;
+            }
+        }
+
+        private class TypeValueProvider : IValueProvider
+        {
+            public object GetValue(object target)
+            {
+                return target.GetType().ToString();
+            }
+
+            public void SetValue(object target, object value)
+            {
+                throw new NotImplementedException();
             }
         }
     }
