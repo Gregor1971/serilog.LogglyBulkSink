@@ -2726,7 +2726,7 @@
           "lib/netstandard1.3/System.Xml.XPath.XDocument.dll": {}
         }
       },
-      "Serilog.LogglyBulkSink/1.1.0": {
+      "Serilog.LogglyBulkSink/1.1.4": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.6",
         "dependencies": {
@@ -8106,7 +8106,7 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
-    "Serilog.LogglyBulkSink/1.1.0": {
+    "Serilog.LogglyBulkSink/1.1.4": {
       "type": "project",
       "path": "../Serilog.LogglyBulkSink/project.json",
       "msbuildProject": "../Serilog.LogglyBulkSink/Serilog.LogglyBulkSink.xproj"

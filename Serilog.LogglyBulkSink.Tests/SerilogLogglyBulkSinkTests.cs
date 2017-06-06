@@ -72,6 +72,29 @@ namespace Serilog.LogglyBulkSink.Tests
         }
 
         [TestMethod]
+        public void TestExceptionRender()
+        {
+            try
+            {
+                // Throw the exception to give it a target site.
+                throw new InvalidOperationException("Test Exception");
+            }
+            catch (InvalidOperationException e)
+            {
+                var logEvent = new LogEvent(
+                    DateTimeOffset.UtcNow,
+                    LogEventLevel.Error,
+                    e,
+                    new MessageTemplate(new MessageTemplateToken[0]),
+                    new LogEventProperty[0]);
+                var result = LogglySink.EventToJson(logEvent);
+                var json = JsonConvert.DeserializeObject<dynamic>(result);
+                (json["Exception"]["TargetSite"] as object).Should().BeNull();
+                (json["Exception"]["Type"].Value as string).Should().Be("System.InvalidOperationException");
+            }
+        }
+
+        [TestMethod]
         public void IncludeDiagnostics_WhenEnabled_IncludesDiagnosticsEvent()
         {
             var logEvent = new LogEvent(DateTimeOffset.UtcNow,
