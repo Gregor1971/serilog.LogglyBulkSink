@@ -1,3 +1,6 @@
 {
-  "projects": [ "Serilog.LogglyBulkSink", "Serilog.LogglyBulkSink.Tests" ]
+  "projects": [ "Serilog.LogglyBulkSink", "Serilog.LogglyBulkSink.Tests" ],
+  "sdk": {
+    "version": "1.0.0-preview2-003121"
+  }
 }
