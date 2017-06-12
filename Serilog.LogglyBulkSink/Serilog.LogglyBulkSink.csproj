@@ -2,12 +2,13 @@
 
   <PropertyGroup>
     <VersionPrefix>1.1.4</VersionPrefix>
-    <TargetFrameworks>netstandard1.6;uap10.0</TargetFrameworks>
+    <TargetFrameworks>netstandard1.4;uap10.0</TargetFrameworks>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <AssemblyName>Serilog.LogglyBulkSink</AssemblyName>
     <PackageId>Serilog.LogglyBulkSink</PackageId>
     <Description>A high throughput Loggly sink for Serilog that utilizes the bulk HTTP endpoint.</Description>
     <Authors>Samir Ahmed and Contributors</Authors>
+    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
@@ -43,6 +44,14 @@
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)' == 'portable-net45+win8'">
+    <TargetFrameworkIdentifier>.NETPortable</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Profile259</TargetFrameworkProfile>
+    <NugetTargetMoniker>.NETPortable,Version=v0.0,Profile=Profile7</NugetTargetMoniker>
+    <LanguageTargets>$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets</LanguageTargets>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="System.Diagnostics.TraceSource" Version="4.3.0" />
     <PackageReference Include="System.Net.Http" Version="4.3.2" />
@@ -54,6 +63,10 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'uap10.0'">
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform " Version="5.3.3" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'portable-net45+win8'">
+    <PackageReference Include="Microsoft.NETCore.Portable.Compatibility" Version="1.0.2" />
   </ItemGroup>
 
   <Target Name="GetPackagingOutputs" />

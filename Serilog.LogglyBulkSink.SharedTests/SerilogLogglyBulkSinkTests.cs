@@ -1,26 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
+using Serilog;
+using Serilog.Debugging;
 using Serilog.Events;
 using Serilog.Parsing;
 using Serilog.LogglyBulkSink;
-using System.Linq;
-using System.Text;
-using Newtonsoft.Json;
-using System.IO;
-using System.Diagnostics;
 
-namespace Serilog.LogglyBulkSink.Tests.UWP
+namespace Serilog.LogglyBulkSink.SharedTests
 {
     [TestClass]
-    public class UnitTest1
+    public class SerilogLogglyBulkSinkTests
     {
-        [TestMethod]
-        public void TestMethod1()
-        {
-        }
-
         [TestMethod]
         public void TestAddIfContains()
         {
@@ -49,7 +46,7 @@ namespace Serilog.LogglyBulkSink.Tests.UWP
             }.ToList();
 
             //changing to remove diagnostics parameter to show that the default version is false, and that this test ensures backwards API compatibility. Don't add it back w/o cutting major version!
-            var noDiagContent = LogglySink.PackageContent(jsons, Encoding.UTF8.GetByteCount(string.Join("\n", jsons)), 0);
+            var noDiagContent = LogglySink.PackageContent(jsons, Encoding.UTF8.GetByteCount(string.Join("\n", jsons)), 0); 
             var stringContent = LogglySink.PackageContent(jsons, Encoding.UTF8.GetByteCount(string.Join("\n", jsons)), 0, true);
             stringContent.Should().NotBeNull();
             noDiagContent.Should().NotBeNull();
@@ -63,7 +60,7 @@ namespace Serilog.LogglyBulkSink.Tests.UWP
         public void TestRender()
         {
             var logEvent = new LogEvent(DateTimeOffset.UtcNow,
-                LogEventLevel.Debug, null, new MessageTemplate(Enumerable.Empty<MessageTemplateToken>()), new[]
+                LogEventLevel.Debug, null, new MessageTemplate(Enumerable.Empty<MessageTemplateToken>()), new []
                 {
                     new LogEventProperty("test1", new ScalarValue("answer1")),
                     new LogEventProperty("0", new ScalarValue("this should be missing")),
@@ -108,7 +105,7 @@ namespace Serilog.LogglyBulkSink.Tests.UWP
                 {
                     new LogEventProperty("Field1", new ScalarValue("Value1")),
                 });
-            var result = new List<string> { LogglySink.EventToJson(logEvent) };
+            var result = new List<string>{LogglySink.EventToJson(logEvent)};
 
             var package = LogglySink.PackageContent(result, 1024, 5, true);
 
@@ -142,17 +139,17 @@ namespace Serilog.LogglyBulkSink.Tests.UWP
         }
 
         [TestMethod]
-        [TestCategory("Integration")]
+        [TestCategory( "Integration")]
         public void WhenInvalidApiKeyProvided_OnSinkSend_TraceAndSerilogSelfLogPopulated()
         {
             var serilogSelfLogWriter = new StringWriter();
-            Debugging.SelfLog.Enable(serilogSelfLogWriter);
+            SelfLog.Enable(serilogSelfLogWriter);
 
             var traceWriter = new StringWriter();
             Trace.Listeners.Add(new TextWriterTraceListener(traceWriter));
 
             var logger = new LoggerConfiguration()
-                .WriteTo.LogglyBulk("!!FAKE KEY!!", new[] { "!!FAKE TAG!!" }).CreateLogger();
+                .WriteTo.LogglyBulk("!!FAKE KEY!!", new[] {"!!FAKE TAG!!"}).CreateLogger();
 
             logger.Fatal("!!FAKE MESSAGE!!");
 
@@ -183,7 +180,7 @@ namespace Serilog.LogglyBulkSink.Tests.UWP
         public void WhenInvalidApiKeyProvided_AndSelfLogOrTraceIsNotConfigured_EverythingIsOkay()
         {
             Trace.Listeners.Clear();
-            Debugging.SelfLog.Disable();
+            SelfLog.Disable();
             var logger = new LoggerConfiguration()
                 .WriteTo.LogglyBulk("!!FAKE KEY!!", new[] { "!!FAKE TAG!!" }).CreateLogger();
 

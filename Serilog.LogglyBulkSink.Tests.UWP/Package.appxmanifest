@@ -5,11 +5,11 @@
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   IgnorableNamespaces="uap mp">
 
-  <Identity Name="fbf7cb52-0915-4fef-af43-6f28934c798a"
+  <Identity Name="810852e1-5c11-4433-9616-b46ac7bf21a4"
             Publisher="CN=grego"
             Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="fbf7cb52-0915-4fef-af43-6f28934c798a" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="810852e1-5c11-4433-9616-b46ac7bf21a4" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>Serilog.LogglyBulkSink.Tests.UWP</DisplayName>
