@@ -208,7 +208,7 @@ namespace Serilog.LogglyBulkSink
             {
                 JsonProperty property = base.CreateProperty(member, memberSerialization);
 
-                if (property.DeclaringType.GetTypeInfo().IsAssignableFrom(typeof(Exception)) && property.PropertyName == "TargetSite")
+                if (property.DeclaringType.GetTypeInfo().IsAssignableFrom(typeof(Exception).GetTypeInfo()) && property.PropertyName == "TargetSite")
                 {
                     property.ShouldSerialize = _ => false;
                 }
@@ -220,7 +220,7 @@ namespace Serilog.LogglyBulkSink
             {
                 var objectContract = base.CreateObjectContract(objectType);
 
-                if (typeof(Exception).GetTypeInfo().IsAssignableFrom(objectType))
+                if (typeof(Exception).GetTypeInfo().IsAssignableFrom(objectType.GetTypeInfo()))
                 {
                     objectContract.Properties.AddProperty(new JsonProperty
                     {
