@@ -93,7 +93,11 @@ namespace Serilog.LogglyBulkSink.Tests.NetFramework
                 var result = LogglySink.EventToJson(logEvent);
                 var json = JsonConvert.DeserializeObject<dynamic>(result);
                 (json["Exception"]["TargetSite"] as object).Should().BeNull();
+#if NET46
+                (json["Exception"]["ClassName"].Value as string).Should().Be("System.InvalidOperationException");
+#else
                 (json["Exception"]["Type"].Value as string).Should().Be("System.InvalidOperationException");
+#endif
             }
         }
 
