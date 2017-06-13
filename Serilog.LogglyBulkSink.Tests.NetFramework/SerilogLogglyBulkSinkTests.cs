@@ -13,7 +13,7 @@ using Serilog.Events;
 using Serilog.Parsing;
 using Serilog.LogglyBulkSink;
 
-namespace Serilog.LogglyBulkSink.SharedTests
+namespace Serilog.LogglyBulkSink.Tests.NetFramework
 {
     [TestClass]
     public class SerilogLogglyBulkSinkTests

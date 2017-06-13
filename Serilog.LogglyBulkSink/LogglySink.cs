@@ -54,9 +54,11 @@ namespace Serilog.LogglyBulkSink
             }
             else
             {
-                return Task.CompletedTask;
+                return completedTask;
             }
         }
+
+        private static Task completedTask = Task.FromResult(false);
 
         private async Task ProcessBatchAsync(IEnumerable<LogEvent> events)
         {

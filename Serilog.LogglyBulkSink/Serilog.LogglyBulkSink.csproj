@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <VersionPrefix>1.1.4</VersionPrefix>
-    <TargetFrameworks>netstandard1.4;uap10.0</TargetFrameworks>
+    <TargetFrameworks>net46;netstandard1.4;uap10.0;portable-net45+win8</TargetFrameworks>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <AssemblyName>Serilog.LogglyBulkSink</AssemblyName>
     <PackageId>Serilog.LogglyBulkSink</PackageId>
@@ -47,22 +47,29 @@
   <PropertyGroup Condition="'$(TargetFramework)' == 'portable-net45+win8'">
     <TargetFrameworkIdentifier>.NETPortable</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Profile259</TargetFrameworkProfile>
+    <TargetFrameworkProfile>Profile7</TargetFrameworkProfile>
     <NugetTargetMoniker>.NETPortable,Version=v0.0,Profile=Profile7</NugetTargetMoniker>
+    <IncludeProjectPriFile>false</IncludeProjectPriFile>
     <LanguageTargets>$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets</LanguageTargets>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
     <PackageReference Include="System.Diagnostics.TraceSource" Version="4.3.0" />
     <PackageReference Include="System.Net.Http" Version="4.3.2" />
     <PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
     <PackageReference Include="Serilog" Version="2.4.0" />
     <PackageReference Include="Serilog.Sinks.PeriodicBatching" Version="2.1.0" />
+    <PackageReference Include="System.Security.Cryptography.X509Certificates" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net46'">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'uap10.0'">
-    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform " Version="5.3.3" />
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="5.3.3" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'portable-net45+win8'">
